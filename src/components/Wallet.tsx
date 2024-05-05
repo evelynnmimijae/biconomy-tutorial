@@ -10,20 +10,7 @@ export default function Wallet() {
   // login() function
   // setupSmartAccount() function
 
-  useEffect(() => {
-    let configureLogin: NodeJS.Timeout | undefined;
-    if (interval) {
-      configureLogin = setInterval(() => {
-        if (!!sdkRef.current?.provider) {
-          // setupSmartAccount();
-          clearInterval(configureLogin);
-        }
-      }, 1000);
-    }
-  }, [interval]);
-}
-
-async function login() {
+  async function login() {
     // If the SDK has not been initialized yet, initialize it
     if (!sdkRef.current) {
       const socialLoginSDK = new SocialLogin();
@@ -43,3 +30,16 @@ async function login() {
       //   setupSmartAccount();
     }
   }
+
+  useEffect(() => {
+    let configureLogin: NodeJS.Timeout | undefined;
+    if (interval) {
+      configureLogin = setInterval(() => {
+        if (!!sdkRef.current?.provider) {
+          // setupSmartAccount();
+          clearInterval(configureLogin);
+        }
+      }, 1000);
+    }
+  }, [interval]);
+}
