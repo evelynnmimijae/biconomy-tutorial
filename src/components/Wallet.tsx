@@ -22,6 +22,18 @@ export default function Wallet() {
       });
       sdkRef.current = socialLoginSDK;
     }
+
+    async function logOut() {
+      // Log out of the smart account
+      await sdkRef.current?.logout();
+    
+      // Hide the wallet
+      sdkRef.current?.hideWallet();
+    
+      // Reset state and stop the interval if it was started
+      setSmartAccount(undefined);
+      enableInterval(false);
+    }  
   
     // If the SDK is set up, but the provider is not set, start the timer to set up a smart account
     if (!sdkRef.current.provider) {
