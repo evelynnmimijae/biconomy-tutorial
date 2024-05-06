@@ -3,6 +3,7 @@ import SocialLogin from "@biconomy/web3-auth";
 import { ethers, providers } from "ethers";
 import { ChainId } from "@biconomy/core-types";
 import { BiconomySmartAccount, BiconomySmartAccountConfig } from "@biconomy/account";
+import { bundler, paymaster } from "@/constants";
 
 export default function Wallet() {
   const sdkRef = useRef<SocialLogin | null>(null);
