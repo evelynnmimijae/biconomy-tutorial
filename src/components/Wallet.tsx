@@ -11,9 +11,6 @@ export default function Wallet() {
   const [loading, setLoading] = useState(false);
   const [, setProvider] = useState<providers.Web3Provider>();
   const [smartAccount, setSmartAccount] = useState<BiconomySmartAccount>();
-  
-  // login() function
-  // setupSmartAccount() function
 
   async function login() {
     // If the SDK has not been initialized yet, initialize it
