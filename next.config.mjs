@@ -9,6 +9,7 @@ const nextConfig = {
         tls: false,
       };
     }
+
     return config;
   },
 };
