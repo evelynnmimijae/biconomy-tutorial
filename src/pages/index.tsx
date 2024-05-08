@@ -5,7 +5,7 @@ import { Suspense } from "react";
 
 // Dynamically import the `Wallet` component to make sure we don't get SSR errors
 const Wallet = dynamic(
-  () => import("../components/Wallet.mjs").then((res) => res.default),
+  () => import("../components/Wallet").then((res) => res.default),
   { ssr: false }
 );
 
