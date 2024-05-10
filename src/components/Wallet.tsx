@@ -38,7 +38,37 @@ export default function Wallet() {
   enableInterval(false);
 }
  async function setupSmartAccount() {
-    // Logic for setting up smart account...
+  try {
+    // If the SDK hasn't fully initialized, return early
+    if (!sdkRef.current?.provider) return;
+
+    // Hide the wallet if currently open
+    sdkRef.current.hideWallet();
+
+    // Start the loading indicator
+    setLoading(true);
+
+    // Initialize the smart account
+    let web3Provider = new ethers.providers.Web3Provider(
+      sdkRef.current?.provider
+    );
+    setProvider(web3Provider);
+    const config: BiconomySmartAccountV2Config = {
+      signer: web3Provider.getSigner(),
+      chainId: ChainId.POLYGON_MUMBAI,
+      bundler: bundler,
+      paymaster: paymaster,
+    };
+    const smartAccount = new BiconomySmartAccountV2(config);
+    await smartAccount.init();
+
+    // Save the smart account to a state variable
+    setSmartAccount(smartAccount);
+  } catch (e) {
+    console.error(e);
+  }
+
+  setLoading(false);
  }
 
  useEffect(() => {
