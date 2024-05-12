@@ -10,7 +10,7 @@ export default function Wallet() {
  const [interval, enableInterval] = useState<boolean>(false);
  const [loading, setLoading] = useState(false);
  const [, setProvider] = useState<providers.Web3Provider>();
- const [smartAccount, setSmartAccount] = useState<BiconomySmartAccountV2>();
+ const [smartAccount, setSmartAccount] = useState<BiconomySmartAccountV2 | undefined>();
 
  async function login() {
     // If the SDK has not been initialized yet, initialize it
@@ -59,11 +59,11 @@ export default function Wallet() {
       bundler: bundler,
       paymaster: paymaster,
     };
-    const smartAccount = new BiconomySmartAccountV2(config);
-    await smartAccount.init();
+    const smartAccountInstance = await BiconomySmartAccountV2.create(config);
+    await smartAccountInstance.init();
 
     // Save the smart account to a state variable
-    setSmartAccount(smartAccount);
+    setSmartAccount(smartAccountInstance);
   } catch (e) {
     console.error(e);
   }
