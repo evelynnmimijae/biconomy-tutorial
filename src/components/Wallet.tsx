@@ -24,6 +24,8 @@ export default function Wallet() {
     }
 
     // Additional logic for login...
+    // After successful login, call setupSmartAccount
+    await setupSmartAccount();
  }
 
  async function logOut() {
@@ -60,7 +62,6 @@ export default function Wallet() {
       paymaster: paymaster,
     };
     const smartAccountInstance = await BiconomySmartAccountV2.create(config);
-    await smartAccountInstance.init();
 
     // Save the smart account to a state variable
     setSmartAccount(smartAccountInstance);
