@@ -1,4 +1,5 @@
 import { Html, Head, Main, NextScript } from "next/document";
+import "@biconomy/web3-auth";
 
 export default function Document() {
   return (
