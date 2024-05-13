@@ -13,6 +13,7 @@ export default function Wallet() {
  const [smartAccount, setSmartAccount] = useState<BiconomySmartAccountV2 | undefined>();
 
  async function login() {
+  console.log("Login function called"); // This logs when the function is called
     // If the SDK has not been initialized yet, initialize it
     if (!sdkRef.current) {
       const socialLoginSDK = new SocialLogin();
@@ -21,11 +22,16 @@ export default function Wallet() {
         network: "testnet",
       });
       sdkRef.current = socialLoginSDK;
+      console.log("Social Login SDK initialized"); // This logs when the SDK initialization is complete
+  } else {
+    console.log("Social Login SDK already initialized"); // This logs if the SDK was already initialized
     }
 
     // Additional logic for login...
     // After successful login, call setupSmartAccount
+    console.log("Calling setupSmartAccount"); // This logs before calling setupSmartAccount
     await setupSmartAccount();
+    console.log("setupSmartAccount called"); // This logs after calling setupSmartAccount
  }
 
  async function logOut() {
