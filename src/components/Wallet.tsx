@@ -6,93 +6,92 @@ import { BiconomySmartAccountV2, BiconomySmartAccountV2Config } from "@biconomy/
 import { bundler, paymaster } from "@/constants";
 
 export default function Wallet() {
- const sdkRef = useRef<SocialLogin | null>(null);
- const [interval, enableInterval] = useState<boolean>(false);
- const [loading, setLoading] = useState(false);
- const [, setProvider] = useState<providers.Web3Provider>();
- const [smartAccount, setSmartAccount] = useState<BiconomySmartAccountV2 | undefined>();
+  const sdkRef = useRef<SocialLogin | null>(null);
+  const [interval, enableInterval] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
+  const [, setProvider] = useState<providers.Web3Provider>();
+  const [smartAccount, setSmartAccount] = useState<BiconomySmartAccountV2 | undefined>();
 
- async function login() {
-  console.log("Login function called"); // This logs when the function is called
-    // If the SDK has not been initialized yet, initialize it
-    if (!sdkRef.current) {
-      const socialLoginSDK = new SocialLogin();
-      await socialLoginSDK.init({
-        chainId: ethers.utils.hexValue(ChainId.POLYGON_MUMBAI).toString(),
-        network: "testnet",
-      });
-      sdkRef.current = socialLoginSDK;
-      console.log("Social Login SDK initialized"); // This logs when the SDK initialization is complete
-  } else {
-    console.log("Social Login SDK already initialized"); // This logs if the SDK was already initialized
+  async function login() {
+    console.log("Login function called");
+    try {
+      if (!sdkRef.current) {
+        console.log("Initializing Social Login SDK...");
+        const socialLoginSDK = new SocialLogin();
+        await socialLoginSDK.init({
+          chainId: ethers.utils.hexValue(ChainId.POLYGON_MUMBAI).toString(),
+          network: "testnet",
+        });
+        sdkRef.current = socialLoginSDK;
+        console.log("Social Login SDK initialized");
+      } else {
+        console.log("Social Login SDK already initialized");
+      }
+
+      if (!sdkRef.current.provider) {
+        console.error("Provider not available after SDK initialization");
+        return;
+      }
+
+      console.log("Provider is available, calling setupSmartAccount");
+      await setupSmartAccount();
+      console.log("setupSmartAccount called");
+    } catch (error) {
+      console.error("Error during login:", error);
     }
-
-    // Additional logic for login...
-    // After successful login, call setupSmartAccount
-    console.log("Calling setupSmartAccount"); // This logs before calling setupSmartAccount
-    await setupSmartAccount();
-    console.log("setupSmartAccount called"); // This logs after calling setupSmartAccount
- }
-
- async function logOut() {
-  // Log out of the smart account
-  await sdkRef.current?.logout();
-
-  // Hide the wallet
-  sdkRef.current?.hideWallet();
-
-  // Reset state and stop the interval if it was started
-  setSmartAccount(undefined);
-  enableInterval(false);
-}
- async function setupSmartAccount() {
-  try {
-    // If the SDK hasn't fully initialized, return early
-    if (!sdkRef.current?.provider) return;
-
-    // Hide the wallet if currently open
-    sdkRef.current.hideWallet();
-
-    // Start the loading indicator
-    setLoading(true);
-
-    // Initialize the smart account
-    let web3Provider = new ethers.providers.Web3Provider(
-      sdkRef.current?.provider
-    );
-    setProvider(web3Provider);
-    const config: BiconomySmartAccountV2Config = {
-      signer: web3Provider.getSigner(),
-      chainId: ChainId.POLYGON_MUMBAI,
-      bundler: bundler,
-      paymaster: paymaster,
-    };
-    const smartAccountInstance = await BiconomySmartAccountV2.create(config);
-
-    // Save the smart account to a state variable
-    setSmartAccount(smartAccountInstance);
-  } catch (e) {
-    console.error(e);
   }
 
-  setLoading(false);
- }
+  async function logOut() {
+    try {
+      await sdkRef.current?.logout();
+      sdkRef.current?.hideWallet();
+      setSmartAccount(undefined);
+      enableInterval(false);
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  }
 
- useEffect(() => {
+  async function setupSmartAccount() {
+    try {
+      if (!sdkRef.current?.provider) {
+        console.error("Provider not available in setupSmartAccount");
+        return;
+      }
+      sdkRef.current.hideWallet();
+      setLoading(true);
+
+      let web3Provider = new ethers.providers.Web3Provider(sdkRef.current?.provider);
+      setProvider(web3Provider);
+      const config: BiconomySmartAccountV2Config = {
+        signer: web3Provider.getSigner(),
+        chainId: ChainId.POLYGON_MUMBAI,
+        bundler: bundler,
+        paymaster: paymaster,
+      };
+      const smartAccountInstance = await BiconomySmartAccountV2.create(config);
+      setSmartAccount(smartAccountInstance);
+    } catch (e) {
+      console.error("Error in setupSmartAccount:", e);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
     let configureLogin: NodeJS.Timeout | undefined;
     if (interval) {
       configureLogin = setInterval(() => {
         if (!!sdkRef.current?.provider) {
-          // setupSmartAccount();
           clearInterval(configureLogin);
         }
       }, 1000);
     }
- }, [interval]);
+    return () => clearInterval(configureLogin);
+  }, [interval]);
 
- return (
+  return (
     <Fragment>
-      {/* Logout Button */}
       {smartAccount && (
         <button
           onClick={logOut}
@@ -107,7 +106,6 @@ export default function Wallet() {
           Send ERC20 using ERC20
         </h1>
 
-        {/* Login Button */}
         {!smartAccount && !loading && (
           <button
             onClick={login}
@@ -117,13 +115,14 @@ export default function Wallet() {
           </button>
         )}
 
-        {/* Loading state */}
         {loading && <p>Loading account details...</p>}
 
         {smartAccount && (
-          <Fragment>{/* Add Transfer Component Here */}</Fragment>
+          <Fragment>
+            {/* Add Transfer Component Here */}
+          </Fragment>
         )}
       </div>
     </Fragment>
- );
+  );
 }
