@@ -4,6 +4,7 @@ import { ethers, providers } from "ethers";
 import { ChainId } from "@biconomy/core-types";
 import { BiconomySmartAccountV2, BiconomySmartAccountV2Config } from "@biconomy/account";
 import { bundler, paymaster } from "@/constants";
+import Transfer from "./Transfer";
 
 export default function Wallet() {
   const sdkRef = useRef<SocialLogin | null>(null);
