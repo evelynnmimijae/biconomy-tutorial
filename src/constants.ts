@@ -2,6 +2,9 @@ import { DEFAULT_ENTRYPOINT_ADDRESS } from "@biconomy/account";
 import { IBundler, Bundler } from "@biconomy/account";
 import { ChainId } from "@biconomy/core-types";
 import { BiconomyPaymaster, IPaymaster } from "@biconomy/paymaster";
+import { config } from 'dotenv';
+config();
+
 
 export const bundler: IBundler = new Bundler({
   bundlerUrl:
@@ -11,7 +14,7 @@ export const bundler: IBundler = new Bundler({
 });
 
 export const paymaster: IPaymaster = new BiconomyPaymaster({
-  paymasterUrl: "https://paymaster.biconomy.io/api/v1/80001/51eac71b-9b66-4bdc-97c7-d2e31a1740c6",
+  paymasterUrl: "https://paymaster.biconomy.io/api/v1/80001/${process.env.YOUR_API_KEY}",
 });
 
 export const USDC_CONTRACT_ADDRESS =
