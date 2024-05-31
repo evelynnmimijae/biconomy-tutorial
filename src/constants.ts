@@ -2,19 +2,18 @@ import { DEFAULT_ENTRYPOINT_ADDRESS } from "@biconomy/account";
 import { IBundler, Bundler } from "@biconomy/account";
 import { ChainId } from "@biconomy/core-types";
 import { BiconomyPaymaster, IPaymaster } from "@biconomy/paymaster";
-import { config } from 'dotenv';
-config();
+import { sepolia } from "viem/chains";
 
 
 export const bundler: IBundler = new Bundler({
   bundlerUrl:
-    "https://bundler.biconomy.io/api/v2/80001/nJPK7B3ru.dd7f7861-190d-41bd-af80-6877f74b8f44",
-  chainId: ChainId.POLYGON_MUMBAI,
+    "https://bundler.biconomy.io/api/v2/11155111/nJPK7B3ru.dd7f7861-190d-41bd-af80-6877f74b8f44",
+  chainId: ChainId.SEPOLIA,
   entryPointAddress: DEFAULT_ENTRYPOINT_ADDRESS,
 });
 
 export const paymaster: IPaymaster = new BiconomyPaymaster({
-  paymasterUrl: "https://paymaster.biconomy.io/api/v1/80001/${process.env.YOUR_API_KEY}",
+  paymasterUrl: "https://paymaster.biconomy.io/api/v1/11155111/VXdX0qTRY.53359272-54fb-4ac5-8dee-c7fc005404fb",
 });
 
 export const USDC_CONTRACT_ADDRESS =
