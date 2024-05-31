@@ -4,7 +4,10 @@ import { ethers, providers } from "ethers";
 import { ChainId } from "@biconomy/core-types";
 import { BiconomySmartAccountV2, BiconomySmartAccountV2Config } from "@biconomy/account";
 import { bundler, paymaster } from "@/constants";
+import { Web3Auth } from "@web3auth/modal";
 import Transfer from "./Transfer";
+import { Result } from "postcss";
+import { error } from "console";
 
 export default function Wallet() {
   const sdkRef = useRef<SocialLogin | null>(null);
@@ -28,6 +31,22 @@ export default function Wallet() {
       } else {
         console.log("Social Login SDK already initialized");
       }
+    
+        // Proceed with Web3Auth authentication
+        await Web3Auth.authenticate({
+          onSuccess: (result) => {
+              console.log("Web3Auth Authentication successful", result);
+              // Handle successful authentication here
+              // For example, you might want to store the result or use it to initialize other components
+          },
+          onError: (error) => {
+              console.error("Web3Auth Authentication failed", error);
+              // Handle any errors that occurred during authentication
+          }
+      });
+
+      // After successful authentication, you might want to proceed with other steps
+      // such as initializing the SDK or fetching user-specific data 
 
       if (!sdkRef.current.provider) {
         console.error("Provider not available after SDK initialization");
