@@ -6,8 +6,6 @@ import { BiconomySmartAccountV2, BiconomySmartAccountV2Config } from "@biconomy/
 import { bundler, paymaster } from "@/constants";
 import { Web3Auth } from "@web3auth/modal";
 import Transfer from "./Transfer";
-import { Result } from "postcss";
-import { error } from "console";
 
 export default function Wallet() {
   const sdkRef = useRef<SocialLogin | null>(null);
